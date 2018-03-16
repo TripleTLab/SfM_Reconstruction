@@ -21,7 +21,7 @@ void OFFeatureMatch(
 	Ptr<FastFeatureDetector> ffd = FastFeatureDetector::create();
 	ffd->detect(img1, l_keypoints);
 	ffd->detect(img2, r_keypoints);
-	vector<Point2f> l_points;//×ø±ê×ª»»
+	vector<Point2f> l_points;//åæ ‡è½¬æ¢
 	KeyPoint::convert(l_keypoints, l_points);
 	vector<Point2f> r_points(l_points.size());
 	//make sure images are grayscale
@@ -99,7 +99,7 @@ void FeatureMatch(
 	vector<KeyPoint>& l_keypoints, vector<KeyPoint>& r_keypoints, vector<DMatch>& matches)
 {
 	Mat l_descriptors, r_descriptors;
-	//ORBÌáÈ¡ÌØÕ÷
+	//ORBæå–ç‰¹å¾
 	/*Ptr<ORB> orb = ORB::create();
 	orb->detectAndCompute(img1, noArray(), l_keypoints, l_descriptors);
 	orb->detectAndCompute(img2, noArray(), r_keypoints, r_descriptors);
@@ -112,16 +112,16 @@ void FeatureMatch(
 	detector->detectAndCompute(img2, Mat(), r_keypoints, r_descriptors);
 	BFMatcher matcher(NORM_L2);
 	matcher.match(l_descriptors, r_descriptors, matches);
-	matches_optimize(l_keypoints, r_keypoints, matches);//ÓÃ»ù´¡¾ØÕóÓÅ»¯
+	matches_optimize(l_keypoints, r_keypoints, matches);//ç”¨åŸºç¡€çŸ©é˜µä¼˜åŒ–
 }
 void matches_optimize(vector<KeyPoint>& l_keypoints, vector<KeyPoint>& r_keypoints, vector<DMatch>& matches)
 {
 	if (matches.size() == 0) return;
-	/*RANSAC Ïû³ıÎóÆ¥ÅäÌØÕ÷µã Ö÷Òª·ÖÎªÈı¸ö²¿·Ö£º
-	1£©¸ù¾İmatches½«ÌØÕ÷µã¶ÔÆë,½«×ø±ê×ª»»ÎªfloatÀàĞÍ
-	2£©Ê¹ÓÃÇó»ù´¡¾ØÕó·½·¨ findFundamentalMat,µÃµ½RansacStatus
-	3£©¸ù¾İRansacStatusÀ´½«ÎóÆ¥ÅäµÄµãÒ²¼´RansacStatus[i]=0µÄµãÉ¾³ı*/
-	//¸ù¾İmatches½«ÌØÕ÷µã¶ÔÆë,½«×ø±ê×ª»»ÎªfloatÀàĞÍ
+	/*RANSAC æ¶ˆé™¤è¯¯åŒ¹é…ç‰¹å¾ç‚¹ ä¸»è¦åˆ†ä¸ºä¸‰ä¸ªéƒ¨åˆ†ï¼š
+	1ï¼‰æ ¹æ®matcheså°†ç‰¹å¾ç‚¹å¯¹é½,å°†åæ ‡è½¬æ¢ä¸ºfloatç±»å‹
+	2ï¼‰ä½¿ç”¨æ±‚åŸºç¡€çŸ©é˜µæ–¹æ³• findFundamentalMat,å¾—åˆ°RansacStatus
+	3ï¼‰æ ¹æ®RansacStatusæ¥å°†è¯¯åŒ¹é…çš„ç‚¹ä¹Ÿå³RansacStatus[i]=0çš„ç‚¹åˆ é™¤*/
+	//æ ¹æ®matcheså°†ç‰¹å¾ç‚¹å¯¹é½,å°†åæ ‡è½¬æ¢ä¸ºfloatç±»å‹
 	vector<KeyPoint> L_keypoints, R_keypoints;
 	vector<DMatch> Re_matches;
 	vector<KeyPoint> Re_keypoints1, Re_keypoints2;
@@ -129,14 +129,14 @@ void matches_optimize(vector<KeyPoint>& l_keypoints, vector<KeyPoint>& r_keypoin
 	{
 		Re_keypoints1.push_back(l_keypoints[matches[i].queryIdx]);
 		Re_keypoints2.push_back(r_keypoints[matches[i].trainIdx]);
-		//ÕâÁ½¾ä»°µÄÀí½â£ºR_keypoint1ÊÇÒª´æ´¢img1ÖĞÄÜÓëimg2Æ¥ÅäµÄÌØÕ÷µã£¬
-		//matchesÖĞ´æ´¢ÁËÕâĞ©Æ¥Åäµã¶ÔµÄimg1ºÍimg2µÄË÷ÒıÖµ
+		//è¿™ä¸¤å¥è¯çš„ç†è§£ï¼šR_keypoint1æ˜¯è¦å­˜å‚¨img1ä¸­èƒ½ä¸img2åŒ¹é…çš„ç‰¹å¾ç‚¹ï¼Œ
+		//matchesä¸­å­˜å‚¨äº†è¿™äº›åŒ¹é…ç‚¹å¯¹çš„img1å’Œimg2çš„ç´¢å¼•å€¼
 	}
-	//×ø±ê×ª»»
+	//åæ ‡è½¬æ¢
 	vector<Point2f>l_points, r_points;
 	KeyPoint::convert(Re_keypoints1, l_points);
 	KeyPoint::convert(Re_keypoints2, r_points);
-	//ÀûÓÃ»ù´¡¾ØÕóÌŞ³ıÎóÆ¥Åäµã
+	//åˆ©ç”¨åŸºç¡€çŸ©é˜µå‰”é™¤è¯¯åŒ¹é…ç‚¹
 	vector<uchar> RansacStatus;//mask
 	Mat Fundamental = findFundamentalMat(l_points, r_points, RansacStatus, FM_RANSAC, 3, 0.99);
 
@@ -153,7 +153,7 @@ void matches_optimize(vector<KeyPoint>& l_keypoints, vector<KeyPoint>& r_keypoin
 			index++;
 		}
 	}
-	std::cout << "ÓÅ»¯ºóÆ¥Åäµã£º " << Re_matches.size() << std::endl;
+	std::cout << "ä¼˜åŒ–ååŒ¹é…ç‚¹ï¼š " << Re_matches.size() << std::endl;
 	if (L_keypoints.size() && R_keypoints.size() && Re_matches.size()) {
 		l_keypoints.clear();
 		r_keypoints.clear();
@@ -190,8 +190,11 @@ int main()
 	imshow("Match points: ", shows);
 	waitKey(0);
 
-
-
+	vector<Point2f>l_points, r_points;
+	KeyPoint::convert(l_keypoints, l_points);
+	KeyPoint::convert(r_keypoints, r_points);
+	vector<uchar> RansacStatus;
+	Mat Fundamental = findFundamentalMat(l_points, r_points, RansacStatus, FM_RANSAC, 3, 0.99);
 
 
 
