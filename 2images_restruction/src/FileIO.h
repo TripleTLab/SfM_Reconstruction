@@ -63,3 +63,57 @@ public:
 		return images;
 	}
 };
+
+
+
+class Pt_FileIO {
+public:
+	Pt_FileIO::Pt_FileIO(string filename, vector<MyPoint> &cloud, const char model) {
+		if (model == 'r') {
+			readFile(filename, cloud);
+		}
+		else if (model == 'w') {
+			writeFile(filename, cloud);
+		}
+		else
+			cout << "ERROR.\nread file: the third parameter is 'r' ;  write file: the third parameter is 'w'." << endl;
+
+	}
+	void Pt_FileIO::readFile(string filename, vector<MyPoint> &input)
+	{
+		ifstream ReadFile;
+		string temp;
+		ReadFile.open(filename);
+		if (ReadFile.fail()) { printf("文件不存在"); return; }
+		if (!getline(ReadFile, temp)) { printf("文件为空");  return; }
+		while (getline(ReadFile, temp))
+		{
+			MyPoint tempPt = processLine(temp);
+			input.push_back(tempPt);
+		}
+		ReadFile.close();
+	}
+	void Pt_FileIO::writeFile(string filename, vector<MyPoint> &output)
+	{
+		ofstream WriteFile(filename);
+		if (!WriteFile) return;
+		for (unsigned i = 0; i < output.size();i++)
+		{
+			WriteFile << output[i].x << ' ' << output[i].y << ' ' << output[i].z << ' ' << output[i].intensity << endl;
+		}
+		WriteFile.close();
+	}
+	Pt_FileIO::MyPoint processLine(string temp)/*将字符串通过流导入点（X,Y,Z）*/
+	{
+		stringstream str;
+		double X = 0.0, Y = 0.0, Z = 0.0;
+		short illu;
+		str << temp;
+		str >> X;
+		str >> Y;
+		str >> Z;
+		str >> illu;
+		MyPoint tempPt(X, Y, Z, illu);
+		return tempPt;
+	}
+};

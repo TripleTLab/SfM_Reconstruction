@@ -18,6 +18,48 @@ struct CloudPoint {
 	vector<int> imgpt_for_img;
 	double reprojection_error;
 };
+struct MyPoint
+{
+	double x;
+	double y;
+	double z;
+	short intensity;
+	MyPoint() {  }
+	MyPoint(double tx, double ty, double tz, short illu) {
+		x = tx;
+		y = ty;
+		z = tz;
+		intensity = illu;
+	}
+	bool operator==(const MyPoint& rhs) {
+		return(x == rhs.x) && (y == rhs.y) && (z == rhs.z);
+	}
+	MyPoint operator+(const MyPoint& rhs) {
+		MyPoint out;
+		out.x = x + rhs.x;
+		out.y = y + rhs.y;
+		out.z = z + rhs.z;
+		return out;
+	}
+	MyPoint operator/(const int n) {
+		MyPoint out;
+		out.x = x / n;
+		out.y = y / n;
+		out.z = z / n;
+		return out;
+	}
+	MyPoint operator=(const MyPoint& rhs) {
+		x = rhs.x;
+		y = rhs.y;
+		z = rhs.z;
+		intensity = rhs.intensity;
+		return MyPoint(x, y, z, intensity);
+	}
+	void MyPoint::print()
+	{
+		std::cout << "x = " << x << "  y = " << y << "  z = " << z << std::endl;
+	}
+};
 
 vector<DMatch> FlipMatches(const vector<DMatch>& matches);
 void KeyPointsToPoints(const vector<KeyPoint>& kps, vector<Point2f>& ps);
