@@ -1,3 +1,0 @@
-E:/SFM/build64/CMakeFiles/SFM.dir
-E:/SFM/build64/CMakeFiles/ALL_BUILD.dir
-E:/SFM/build64/CMakeFiles/ZERO_CHECK.dir
