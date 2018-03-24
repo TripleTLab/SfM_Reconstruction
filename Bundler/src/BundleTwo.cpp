@@ -2,9 +2,11 @@
 
 #include <assert.h>
 #include <float.h>
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
+#include <time.h>
 
 #include "BundlerApp.h"
 #include "Bundle.h"
